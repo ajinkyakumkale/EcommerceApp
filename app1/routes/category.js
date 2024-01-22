@@ -1,0 +1,41 @@
+const express = require('express')
+const db = require('../db')
+const utils = require('../utils')
+
+const router = express.Router()
+
+router.get('/category', (request, response) => {
+  const statement = `select id, title, description from category`
+  db.execute(statement, (error, data) => {
+        response.send(utils.createResult(error, data))
+  })
+})
+
+router.post('/category', (request, response) => {
+  const { title, description } = request.body
+  const statement = `insert into category (title, description) values ('${title}','${description}')`
+  db.execute(statement, (error, data) => {
+    response.send(utils.createResult(error, data))
+  })
+})
+
+router.put('/category/:id', (request, response) => {
+  const { id } = request.params
+  const { title, description } = request.body
+
+  const statement = `update category set title = '${title}', description = '${description}' where id = ${id}`
+  db.execute(statement, (error, data) => {
+    response.send(utils.createResult(error, data))
+  })
+})
+
+router.delete('/category/:id', (request, response) => {
+  const { id } = request.params
+
+  const statement = `delete from category where id = ${id}`
+  db.execute(statement, (error, data) => {
+    response.send(utils.createResult(error, data))
+  })
+})
+
+module.exports = router
